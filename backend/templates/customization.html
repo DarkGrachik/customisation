@@ -8,36 +8,86 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <img src="https://via.placeholder.com/40" alt="avatar" class="chat-avatar">
-            <span>YamiChat</span>
+    <div class="chat-container-wrapper">
+        <div class="chat-container">
+            <div class="chat-header">
+                <img id="chat-avatar" src="https://via.placeholder.com/40" alt="avatar" class="chat-avatar">
+                <span id="bot-name">WowChat</span>
+            </div>
+            <div id="chatbox" class="chat-box">
+                <!-- Сообщения будут вставляться сюда -->
+            </div>
+            <div class="chat-footer">
+                <textarea id="user_message" placeholder="Введите ваш вопрос..." rows="2"></textarea>
+                <button id="send_button">Отправить</button>
+            </div>
         </div>
-        <div id="chatbox" class="chat-box">
-            <!-- Сообщения будут вставляться сюда -->
-        </div>
-        <div class="chat-footer">
-            <textarea id="user_message" placeholder="Введите ваш вопрос..." rows="2"></textarea>
-            <button id="send_button">Отправить</button>
+
+        <div id="color-picker">       
+            <div class="color-picker-column">
+                <h3>Настройки чата</h3>
+                <div class="color-section">
+                    <label for="chat-background">Цвет фона чата:</label>
+                    <input type="color" id="chat-background" name="chat-background" value="#f4f4f4">
+        
+                    <label for="user-message-bg">Цвет фона сообщений пользователя:</label>
+                    <input type="color" id="user-message-bg" name="user-message-bg" value="#e1f7d5">
+        
+                    <label for="bot-message-bg">Цвет фона сообщений бота:</label>
+                    <input type="color" id="bot-message-bg" name="bot-message-bg" value="#d5e1f7">
+        
+                    <label for="header-background">Цвет фона заголовка:</label>
+                    <input type="color" id="header-background" name="header-background" value="#2b98f0">
+        
+                    <label for="footer-background">Цвет фона под поле ввода:</label>
+                    <input type="color" id="footer-background" name="footer-background" value="#ffffff">
+        
+                    <label for="button-color">Цвет кнопок:</label>
+                    <input type="color" id="button-color" name="button-color" value="#2b98f0">
+
+                    <label for="bot-name-input">Название чат-бота:</label>
+                    <input type="text" id="bot-name-input" placeholder="Введите название бота" value="WowChat">
+        
+                    <label for="upload-avatar">Загрузить изображение для аватара:</label>
+                    <input type="file" id="upload-avatar">
+        
+                </div>
+        
+                <!-- <div class="color-section">
+                    <label for="message-font">Шрифт:</label>
+                    <select id="message-font">
+                        <option value="Arial">Arial</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="Tahoma">Tahoma</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                </div> -->
+            </div>
+        
+            <!-- Колонка для выбора цвета текста -->
+            <div class="color-picker-column">
+                <div class="color-section">
+                    <h3>Цвет текста</h3>
+        
+                    <label for="user-message-text-color">Цвет текста сообщений пользователя:</label>
+                    <input type="color" id="user-message-text-color" value="#000000">
+        
+                    <label for="bot-message-text-color">Цвет текста сообщений бота:</label>
+                    <input type="color" id="bot-message-text-color" value="#000000">
+        
+                    <label for="header-text-color">Цвет текста заголовка:</label>
+                    <input type="color" id="header-text-color" value="#ffffff">
+        
+                    <label for="button-text-color">Цвет текста кнопок:</label>
+                    <input type="color" id="button-text-color" value="#ffffff">
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="color-picker">
-        <label for="chat-background">Цвет фона чата:</label>
-        <input type="color" id="chat-background" name="chat-background" value="#f4f4f4">
-
-        <label for="user-message-bg">Цвет фона сообщений пользователя:</label>
-        <input type="color" id="user-message-bg" name="user-message-bg" value="#e1f7d5">
-
-        <label for="bot-message-bg">Цвет фона сообщений бота:</label>
-        <input type="color" id="bot-message-bg" name="bot-message-bg" value="#d5e1f7">
-    </div>
     <button type="button" id="generate-script-button">Получить код для вставки</button>
-    <button type="button" id="save-script-button">Сохранить код</button> <!-- Новая кнопка -->
     <button id="copy-code-button">Копировать код</button>
-    <h3>Сгенерированный код для вставки:</h3>
-    <textarea id="generated-script" rows="10" cols="50" readonly></textarea>
-    <script src="/static/preview.js"></script>
 
+    <script src="/static/preview.js"></script>
 </body>
 </html>

@@ -2,165 +2,160 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatBackgroundInput = document.getElementById('chat-background');
     const userMessageBgInput = document.getElementById('user-message-bg');
     const botMessageBgInput = document.getElementById('bot-message-bg');
+    const headerBackgroundInput = document.getElementById('header-background');
+    // const messageFontInput = document.getElementById('message-font');
+    const botNameInput = document.getElementById('bot-name-input');
+    const avatarInput = document.getElementById('upload-avatar');
+    const footerBackgroundInput = document.getElementById('footer-background');
+    const buttonColorInput = document.getElementById('button-color');
     const generateScriptButton = document.getElementById('generate-script-button');
-    const generatedScriptTextarea = document.getElementById('generated-script');
-    const saveScriptButton = document.getElementById('save-script-button');
+    const copyCodeButton = document.getElementById('copy-code-button');
+    const chatbox = document.getElementById('chatbox');
+    const chatAvatar = document.getElementById('chat-avatar');
+    const botName = document.getElementById('bot-name');
     const sendButton = document.getElementById('send_button');
     const userMessageInput = document.getElementById('user_message');
-    const chatbox = document.getElementById('chatbox');
-    const copyCodeButton = document.getElementById('copy-code-button');
+    const userMessageTextColorInput = document.getElementById('user-message-text-color'); // Цвет текста сообщений пользователя
+    const botMessageTextColorInput = document.getElementById('bot-message-text-color'); // Цвет текста сообщений бота
+    const headerTextColorInput = document.getElementById('header-text-color'); // Цвет текста заголовка
+    const buttonTextColorInput = document.getElementById('button-text-color'); // Цвет текста кнопок
 
-    // Функция для применения новых стилей ко всем сообщениям
+    // Функция для добавления сообщений в чат
+    function addMessage(text, type) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', type);
+
+        // Применяем выбранный цвет фона для сообщения
+        if (type === 'user-message') {
+            messageDiv.style.backgroundColor = userMessageBgInput.value;
+            messageDiv.style.color = userMessageTextColorInput.value;
+            messageDiv.style.setProperty('--user-message-color', userMessageBgInput.value);
+        } else if (type === 'bot-message') {
+            messageDiv.style.backgroundColor = botMessageBgInput.value;
+            messageDiv.style.color = botMessageTextColorInput.value; 
+            messageDiv.style.setProperty('--bot-message-color', botMessageBgInput.value);
+        }
+
+        // Применяем шрифт к новому сообщению
+        // messageDiv.style.fontFamily = messageFontInput.value;
+
+        messageDiv.innerHTML = text;
+        chatbox.appendChild(messageDiv);
+        chatbox.scrollTop = chatbox.scrollHeight; // Прокрутка чата вниз
+    }
+
+    // Добавление тестовых сообщений
+    addMessage('Привет! Как я могу помочь?', 'bot-message');
+    addMessage('Какая погода в Москве?', 'user-message');
+
+    // Обработчик для отправки сообщений
+    sendButton.addEventListener('click', () => {
+        const userMessage = userMessageInput.value.trim();
+        if (userMessage) {
+            addMessage(userMessage, 'user-message');
+            userMessageInput.value = ''; // Очистка поля ввода
+
+            // Ответ от бота
+            setTimeout(() => {
+                addMessage('Я вас понял, спасибо за вопрос!', 'bot-message');
+            }, 1000);
+        }
+    });
+
+    // Применение стилей
     function applyStyles() {
-        chatbox.style.backgroundColor = chatBackgroundInput.value;
+        const selectedUserMessageTextColor = userMessageTextColorInput.value;  // Цвет текста сообщений пользователя
+        const selectedBotMessageTextColor = botMessageTextColorInput.value;  // Цвет текста сообщений бота
+        const selectedHeaderTextColor = headerTextColorInput.value;  // Цвет текста заголовка
+        const selectedButtonTextColor = buttonTextColorInput.value;  // Цвет текста кнопок
 
         document.querySelectorAll('.user-message').forEach(function (message) {
             message.style.backgroundColor = userMessageBgInput.value;
+            message.style.color = selectedUserMessageTextColor;
+            // message.style.fontFamily = selectedFont;
+            message.style.setProperty('--user-message-color', userMessageBgInput.value);
         });
 
         document.querySelectorAll('.bot-message').forEach(function (message) {
             message.style.backgroundColor = botMessageBgInput.value;
+            message.style.color = selectedBotMessageTextColor; 
+            message.style.setProperty('--bot-message-color', botMessageBgInput.value);
+            // message.style.fontFamily = messageFontInput.value;
         });
-    }
 
-    // Генерация начальных сообщений
-    function generateInitialMessages() {
-        const userMessageElement = document.createElement('div');
-        userMessageElement.classList.add('message', 'user-message');
-        userMessageElement.textContent = "Привет, как дела?";
-        chatbox.appendChild(userMessageElement);
-
-        const botMessageElement = document.createElement('div');
-        botMessageElement.classList.add('message', 'bot-message');
-        botMessageElement.textContent = "Привет! Всё отлично, чем могу помочь?";
-        chatbox.appendChild(botMessageElement);
-
-        applyStyles();
-    }
-
-    // Обновление превью
-    function updatePreview() {
         chatbox.style.backgroundColor = chatBackgroundInput.value;
-        document.querySelectorAll('.user-message').forEach(el => {
-            el.style.backgroundColor = userMessageBgInput.value;
-        });
-        document.querySelectorAll('.bot-message').forEach(el => {
-            el.style.backgroundColor = botMessageBgInput.value;
-        });
+        document.querySelector('.chat-header').style.backgroundColor = headerBackgroundInput.value;
+        document.querySelector('.chat-footer').style.backgroundColor = footerBackgroundInput.value;
+        sendButton.style.backgroundColor = buttonColorInput.value;
+        chatAvatar.src = avatarInput.files.length > 0 ? URL.createObjectURL(avatarInput.files[0]) : 'https://via.placeholder.com/40';
+        botName.textContent = botNameInput.value;
+
+        chatbox.style.color = selectedUserMessageTextColor; // Цвет текста сообщений пользователя
+        document.querySelector('.chat-header').style.color = selectedHeaderTextColor; // Цвет текста заголовка
+        sendButton.style.color = selectedButtonTextColor; // Цвет текста кнопок
+
+        // chatbox.style.fontFamily = messageFontInput.value;
+
+        // Применение шрифта ко всем элементам, кроме сообщений
+        // document.querySelector('.chat-header').style.fontFamily = messageFontInput.value;
+        // sendButton.style.fontFamily = messageFontInput.value;
+        // userMessageInput.style.fontFamily = messageFontInput.value;
     }
 
-    // Копирование HTML кода чата в буфер обмена
-    copyCodeButton.addEventListener('click', () => {
-        // Получаем внешний вид чата с учётом стилей и сообщений
-        const chatHtml = `
-            <div id="chat-container" style="width: 300px; height: 400px; overflow-y: auto;">
-                <div id="chat-header" style="background-color: #f1f1f1; padding: 10px; text-align: center; font-weight: bold;">
-                    Чат с ботом
-                </div>
-                <div id="chatbox" style="border: 1px solid #ddd; padding: 10px; background-color: ${chatBackgroundInput.value}; height: 300px; overflow-y: auto;">
-                    ${[...chatbox.children].map(message => {
-                        const messageBgColor = message.classList.contains('user-message') ? userMessageBgInput.value : botMessageBgInput.value;
-                        const messageAlign = message.classList.contains('user-message') ? 'right' : 'left';
-                        const triangle = message.classList.contains('user-message') ? 'right' : 'left';
+    // Обработчики событий
+    chatBackgroundInput.addEventListener('input', applyStyles);
+    userMessageBgInput.addEventListener('input', applyStyles);
+    botMessageBgInput.addEventListener('input', applyStyles);
+    headerBackgroundInput.addEventListener('input', applyStyles);
+    // messageFontInput.addEventListener('change', applyStyles);
+    botNameInput.addEventListener('input', applyStyles);
+    avatarInput.addEventListener('change', applyStyles);
+    footerBackgroundInput.addEventListener('input', applyStyles);
+    buttonColorInput.addEventListener('input', applyStyles);
+    userMessageTextColorInput.addEventListener('input', applyStyles);
+    botMessageTextColorInput.addEventListener('input', applyStyles);
+    headerTextColorInput.addEventListener('input', applyStyles);
+    buttonTextColorInput.addEventListener('input', applyStyles);
 
-                        return `
-                            <div class="message ${message.classList[1]}" style="background-color: ${messageBgColor}; padding: 10px; margin: 10px; border-radius: 10px; text-align: ${messageAlign}; position: relative;">
-                                ${message.textContent}
-                                <div class="triangle" style="position: absolute; ${triangle}: -10px; top: 50%; border-left: 10px solid transparent; border-right: 10px solid transparent; border-${triangle}: 10px solid ${messageBgColor};"></div>
-                            </div>
-                        `;
-                    }).join('')}
+    // Генерация кода для вставки
+    generateScriptButton.addEventListener('click', () => {
+        const scriptCode = ` 
+            <div class="chat-container">
+                <div class="chat-header" style="font-family: ${messageFontInput.value};">
+                    <img src="${chatAvatar.src}" alt="avatar" class="chat-avatar">
+                    <span>${botName.textContent}</span>
                 </div>
-                <div id="chat-input" style="padding: 10px; background-color: #f9f9f9; border-top: 1px solid #ddd;">
-                    <input type="text" id="user_message" placeholder="Введите сообщение..." style="width: calc(100% - 80px); padding: 5px;">
-                    <button id="send_button" style="padding: 5px 10px;">Отправить</button>
+                <div class="chat-box" style="background-color: ${chatBackgroundInput.value}; font-family: ${messageFontInput.value};">
+                    <!-- Сообщения -->
+                </div>
+                <div class="chat-footer" style="background-color: ${footerBackgroundInput.value};">
+                    <textarea placeholder="Введите ваш вопрос..." rows="2" style="font-family: ${messageFontInput.value};"></textarea>
+                    <button style="font-family: ${messageFontInput.value};">Отправить</button>
                 </div>
             </div>
         `;
+        alert('Скопируйте этот код:\n' + scriptCode);
+    });
 
-        // Копируем в буфер обмена
-        navigator.clipboard.writeText(chatHtml).then(() => {
-            alert('Код скопирован в буфер обмена!');
-        }).catch(err => {
-            console.error('Ошибка при копировании:', err);
+    // Копирование кода
+    copyCodeButton.addEventListener('click', () => {
+        const code = ` 
+            <div class="chat-container">
+                <div class="chat-header" style="font-family: ${messageFontInput.value};">
+                    <img src="${chatAvatar.src}" alt="avatar" class="chat-avatar">
+                    <span>${botName.textContent}</span>
+                </div>
+                <div class="chat-box" style="background-color: ${chatBackgroundInput.value}; font-family: ${messageFontInput.value};">
+                    <!-- Сообщения -->
+                </div>
+                <div class="chat-footer" style="background-color: ${footerBackgroundInput.value};">
+                    <textarea placeholder="Введите ваш вопрос..." rows="2" style="font-family: ${messageFontInput.value};"></textarea>
+                    <button style="font-family: ${messageFontInput.value};">Отправить</button>
+                </div>
+            </div>
+        `;
+        navigator.clipboard.writeText(code).then(() => {
+            alert('Код успешно скопирован!');
         });
     });
-
-    // Слушатели событий для изменения стилей
-    chatBackgroundInput.addEventListener('input', updatePreview);
-    userMessageBgInput.addEventListener('input', updatePreview);
-    botMessageBgInput.addEventListener('input', updatePreview);
-
-    // Генерация скрипта для вставки
-    generateScriptButton.addEventListener('click', () => {
-        const customization = {
-            background_color: chatBackgroundInput.value,
-            user_message_color: userMessageBgInput.value,
-            bot_message_color: botMessageBgInput.value
-        };
-
-        const script = `
-            <div id="chat-preview" style="border: 1px solid #ddd; padding: 10px; width: 300px; height: 400px; overflow-y: auto; background-color: ${customization.background_color};">
-                <div class="bot-message" style="background-color: ${customization.bot_message_color}; padding: 10px; margin: 10px; border-radius: 10px;">Пример сообщения от бота</div>
-                <div class="user-message" style="background-color: ${customization.user_message_color}; padding: 10px; margin: 10px; border-radius: 10px; text-align: right;">Пример сообщения от пользователя</div>
-            </div>
-        `;
-
-        generatedScriptTextarea.value = script;
-    });
-
-    // Сохранение сгенерированного скрипта в файл
-    saveScriptButton.addEventListener('click', () => {
-        const scriptContent = generatedScriptTextarea.value;
-        const blob = new Blob([scriptContent], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'chatbot_script.html';
-        link.click();
-    });
-
-    // Обработчик для отправки сообщения
-    sendButton.addEventListener('click', function() {
-        var userMessage = userMessageInput.value.trim();
-        if (userMessage === "") return;
-
-        var userMessageElement = document.createElement('div');
-        userMessageElement.classList.add('message', 'user-message');
-        userMessageElement.textContent = userMessage;
-
-        chatbox.appendChild(userMessageElement);
-        userMessageInput.value = '';
-
-        var userMessageBgColor = userMessageBgInput.value;
-        userMessageElement.style.backgroundColor = userMessageBgColor;
-
-        fetch('/chatbot/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: userMessage,
-                csrfmiddlewaretoken: document.querySelector('[name="csrfmiddlewaretoken"]').value
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            var botMessageElement = document.createElement('div');
-            botMessageElement.classList.add('message', 'bot-message');
-            botMessageElement.textContent = data.reply;
-
-            chatbox.appendChild(botMessageElement);
-
-            var botMessageBgColor = botMessageBgInput.value;
-            botMessageElement.style.backgroundColor = botMessageBgColor;
-
-            chatbox.scrollTop = chatbox.scrollHeight;
-        })
-        .catch(error => console.error('Ошибка:', error));
-    });
-
-    // Применяем стили при загрузке страницы
-    applyStyles();
-
-    // Генерируем начальные сообщения при старте страницы
-    generateInitialMessages();
 });
