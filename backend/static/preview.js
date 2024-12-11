@@ -45,8 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Добавление тестовых сообщений
-    addMessage('Привет! Как я могу помочь?', 'bot-message');
     addMessage('Какая погода в Москве?', 'user-message');
+    addMessage('Прекрасная! Как еще я могу помочь?', 'bot-message');
+
 
     // Обработчик для отправки сообщений
     sendButton.addEventListener('click', () => {
@@ -158,4 +159,117 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Код успешно скопирован!');
         });
     });
+
+
+    // Функция для определения селектора бота
+    function getBotSelector() {
+        // Ищем элемент с классом "chat-container"
+        const botElement = document.querySelector('.chat-container');
+    
+        if (botElement) {
+            return botElement;
+        } else {
+            console.error('Бот с классом "chat-container" не найден.');
+            return null;
+        }
+    }
+    
+    function getAppliedStyles(element) {
+        const styles = window.getComputedStyle(element);
+        let styleText = '';
+        for (let i = 0; i < styles.length; i++) {
+            const propName = styles[i];
+            const propValue = styles.getPropertyValue(propName);
+            // Сохраняем все стили, включая размеры и позиционирование
+            styleText += `${propName}: ${propValue};\n`;
+        }
+        return styleText;
+    }
+    
+    function gatherCSS(element) {
+        let css = '';
+        const allElements = element.querySelectorAll('*');
+        allElements.forEach((el) => {
+            // Здесь собираем все стили для каждого элемента
+            css += `${el.tagName.toLowerCase()} {\n${getAppliedStyles(el)}}\n`;
+        });
+        return css;
+    }
+    
+    function exportBot(botElement) {
+        if (!botElement) {
+            console.error('Бот не найден.');
+            return;
+        }
+    
+        const botHTML = botElement.outerHTML;
+    
+        const cssStyles = gatherCSS(botElement);
+    
+        const scriptTags = Array.from(document.querySelectorAll('script'));
+        const inlineScripts = scriptTags
+            .filter((script) => !script.src)
+            .map((script) => script.innerHTML)
+            .join('\n');
+    
+        const externalScripts = scriptTags
+            .filter((script) => script.src)
+            .map((script) => `<script src="${script.src}"></script>`)
+            .join('\n');
+    
+        const fullHTML = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Копия бота</title>
+        <style>
+            ${cssStyles}
+        </style>
+    </head>
+    <body>
+        ${botHTML}
+        ${externalScripts}
+        <script>
+            ${inlineScripts}
+        </script>
+    </body>
+    </html>`;
+    
+        const blob = new Blob([fullHTML], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'bot_copy.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    
+        console.log('Бот успешно экспортирован!');
+    }
+    
+
+    // Обработчик кнопки
+    function setupCopyButton() {
+    // Создаем кнопку
+    const button = document.createElement('button');
+    button.textContent = 'Скопировать бота';
+    button.style.position = 'fixed';
+    button.style.top = '10px';
+    button.style.right = '10px';
+    button.style.zIndex = 1000;
+
+    document.body.appendChild(button);
+
+    button.addEventListener('click', () => {
+        const botElement = getBotSelector();
+        if (botElement) {
+            exportBot(botElement);
+        } else {
+            alert('Бот не найден. Убедитесь, что класс "chat-container" есть в разметке.');
+        }
+    });
+    
+    }
+    setupCopyButton();
 });
