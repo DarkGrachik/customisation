@@ -1,0 +1,21 @@
+stages:
+  - build
+  - upload
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t myimage_name:$CI_COMMIT_SHORT_SHA .
+
+upload:
+  stage: upload
+  script:
+    - kind load docker-image myimage_name:${CI_COMMIT_SHORT_SHA}
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+  script:
+    - kubectl get pods
